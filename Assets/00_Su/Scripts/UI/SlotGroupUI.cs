@@ -1,28 +1,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlotGroupUI : MonoBehaviour
+public abstract class BaseSlotGroupUI : BasePanel
 {
     [SerializeField] private Sprite _defaultIcon;
-    [SerializeField] private List<BaseSlotUI> _slotUIs;
-    private ISlotGroup _slotGroup;
+    [SerializeField] protected List<BaseSlotUI> _slotUIs;
 
-    public void Init(ISlotGroup slotGroup)
+    protected IReadOnlyList<BaseSlotUI> SlotUIs => _slotUIs;
+
+    protected virtual void OnEnable()  => Init();
+    protected virtual void OnDisable() => Cleanup();
+
+    protected virtual void Init()
     {
-        _slotGroup = slotGroup;
         GameManager.Instance.OnStateChanged += Refresh;
-        for (int i = 0; i < _slotUIs.Count; i++)
-            _slotUIs[i].Init(_slotGroup.Slots[i], _defaultIcon);
     }
 
-    private void Refresh()
+    protected virtual void Cleanup()
     {
-        for (int i = 0; i < _slotGroup.Slots.Count; i++)
-            _slotUIs[i].Refresh(_slotGroup.Slots[i]);
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnStateChanged -= Refresh;
     }
 
-    private void OnDestroy()
-    {
-        GameManager.Instance.OnStateChanged -= Refresh;
-    }
+    protected virtual void Refresh() { }
 }

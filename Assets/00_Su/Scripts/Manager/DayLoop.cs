@@ -9,6 +9,9 @@ public class DayLoop
         foreach (var skill in character.Skills)
             skill.OnTick();
 
+        foreach (var skill in GameManager.Instance.MetaStats.Skills)
+            skill.OnTick();
+
         yield return ProcessExpired(character);
 
         GameManager.Instance.DayState.NextDay();

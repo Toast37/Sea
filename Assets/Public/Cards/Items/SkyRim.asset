@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5a9d3b25412f62489b08508c99d56f5, type: 3}
+  m_Name: SkyRim
+  m_EditorClassIdentifier: Assembly-CSharp::Sword
+  _icon: {fileID: 948549590, guid: 3c13eceb913b3204ea3d87e6359047da, type: 3}
+  _description: "\u6211\u662F\u795E\u79D8\u9053\u5177..."
+  _panelKey: Info
+  _statModifiers: []
+  _metaStatModifiers: []
+  _buffs:
+  - {fileID: 11400000, guid: 51fb4a5bbbc8a5a44a3dc9323688461a, type: 2}

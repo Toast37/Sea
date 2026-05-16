@@ -3,9 +3,14 @@ using UnityEngine;
 
 public class CharacterManager : BaseManager<CharacterManager>
 {
-    public ICharacter CurrentCharacter { get; private set; }
-    public ICharacter EquippingCharacter { get; private set; }
-    public List<ICharacter> Party { get; private set; } = new List<ICharacter>();
+    public ICharacter        CurrentCharacter   { get; private set; }
+    public List<ICharacter>  Party              { get; private set; } = new List<ICharacter>();
+
+    public void AddToParty(ICharacter character)
+    {
+        (character as BaseCharacter)?.Init();
+        Party.Add(character);
+    }
 
     public void SetCurrentCharacter(ICharacter character)
     {
@@ -15,47 +20,39 @@ public class CharacterManager : BaseManager<CharacterManager>
 
     public void Equip(ICharacter character, ICard card, ISlot slot)
     {
-        EquippingCharacter = character;
         slot.Add(card);
-        if (card is IExtra extra) ApplyExtra(character, extra);
-        card.OnEquip();
-        EquippingCharacter = null;
+        if (card is IExtra extra) ApplyExtra(character, extra, card);
+        card.OnEquip(character);
         GameManager.Instance.NotifyStateChanged();
     }
 
     public void Unequip(ICharacter character, ICard card, ISlot slot)
     {
-        EquippingCharacter = character;
         slot.Remove(card);
-        if (card is IExtra extra) RemoveExtra(character, extra);
-        card.OnUnequip();
-        EquippingCharacter = null;
+        if (card is IExtra extra) RemoveExtra(character, extra, card);
+        card.OnUnequip(character);
         GameManager.Instance.NotifyStateChanged();
     }
 
-    public void ModifyStat(ICharacter character, StatType stat, int value)
-    {
-        character.ApplyStat(stat, value);
-    }
-
-    public void ModifyAllStat(StatType stat, int value)
+    public void ModifyAllStat(object source, StatType stat, int value)
     {
         foreach (var c in Party)
-            ModifyStat(c, stat, value);
+            c.AddMod(source, stat, value);
     }
 
-    public void ApplyExtra(ICharacter character, IExtra extra)
+    public void ApplyExtra(ICharacter character, IExtra extra, object source = null)
     {
+        string sourceId = (source as ICard)?.CardId ?? extra.GetType().Name;
         foreach (var kv in extra.StatModifiers)
-            ModifyStat(character, kv.Key, kv.Value);
+            character.AddMod(sourceId, kv.Key, kv.Value);
         foreach (var kv in extra.MetaStatModifiers)
             GameManager.Instance.MetaStats.Modify(kv.Key.ToString(), kv.Value);
     }
 
-    public void RemoveExtra(ICharacter character, IExtra extra)
+    public void RemoveExtra(ICharacter character, IExtra extra, object source = null)
     {
-        foreach (var kv in extra.StatModifiers)
-            ModifyStat(character, kv.Key, -kv.Value);
+        string sourceId = (source as ICard)?.CardId ?? extra.GetType().Name;
+        character.RemoveMod(sourceId);
         foreach (var kv in extra.MetaStatModifiers)
             GameManager.Instance.MetaStats.Modify(kv.Key.ToString(), -kv.Value);
     }
@@ -66,6 +63,7 @@ public class CharacterManager : BaseManager<CharacterManager>
             skill.OnExpire();
         character.Skills.Clear();
         Party.Remove(character);
+        character.OnDead();
         GameManager.Instance.NotifyStateChanged();
     }
 }

@@ -16,14 +16,14 @@ public class CommandExecutor : BaseManager<CommandExecutor>
                 {
                     { CommandType.AddTag,       cmd => GameManager.Instance.TagManager.Add(cmd.Param) },
                     { CommandType.RemoveTag,    cmd => GameManager.Instance.TagManager.Remove(cmd.Param) },
-                    { CommandType.AddCard,      cmd => { } },
-                    { CommandType.RemoveCard,   cmd => { } },
+                    { CommandType.AddCard,      cmd => InventoryManager.Instance.Add(cmd.Descriptor) },
+                    { CommandType.RemoveCard,   cmd => InventoryManager.Instance.Remove(cmd.Value) },
                     { CommandType.EquipCard,    cmd => { } },
                     { CommandType.UnequipCard,  cmd => { } },
-                    { CommandType.StatDelta,    cmd => CharacterManager.Instance.ModifyStat(
-                        CharacterManager.Instance.CurrentCharacter, cmd.StatType, cmd.Value) },
+                    { CommandType.StatDelta,    cmd => CharacterManager.Instance.CurrentCharacter?
+                        .AddMod(cmd, cmd.StatType, cmd.Value) },
                     { CommandType.AllStatDelta, cmd => CharacterManager.Instance.ModifyAllStat(
-                        cmd.StatType, cmd.Value) },
+                        cmd, cmd.StatType, cmd.Value) },
                     { CommandType.MetaStatDelta,cmd => GameManager.Instance.MetaStats.Modify(
                         cmd.Param, cmd.Value) },
                     { CommandType.PlayDialog,   cmd => { } },

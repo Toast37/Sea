@@ -3,8 +3,10 @@ using UnityEngine;
 public abstract class BaseSlotUI : MonoBehaviour
 {
     [SerializeField] protected Sprite _defaultIcon;
-    protected ISlot _slot;
+    public ISlot _slot;
     protected bool _isShowing;
+
+    protected virtual void Awake() { }
 
     public void Init(ISlot slot, Sprite fallbackIcon = null)
     {
@@ -21,10 +23,14 @@ public abstract class BaseSlotUI : MonoBehaviour
     public virtual void Show()
     {
         _isShowing = true;
+        gameObject.SetActive(true);
     }
 
     public virtual void Hide()
     {
         _isShowing = false;
+        gameObject.SetActive(false);
     }
+
+    protected IVisual GetVisual() => _slot?.Card as IVisual;
 }

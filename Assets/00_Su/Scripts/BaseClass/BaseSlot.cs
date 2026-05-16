@@ -1,28 +1,26 @@
-using System.Collections.Generic;
-using UnityEngine;
-
-public abstract class BaseSlot : ScriptableObject, ISlot
+public abstract class BaseSlot : ISlot
 {
-    protected List<ICard> _cards = new List<ICard>();
-    public IReadOnlyList<ICard> Cards => _cards;
-    public int? Capacity { get; set; }
+    private ICard _card;
+    public ICard Card => _card;
 
     public abstract bool ShouldAddCard(ICard card);
     public abstract bool ShouldRemoveCard(ICard card);
 
     public virtual bool Add(ICard card)
     {
+        if (_card != null) return false;
         if (!ShouldAddCard(card)) return false;
-        if (Capacity.HasValue && _cards.Count >= Capacity) return false;
-        _cards.Add(card);
+        _card = card;
         return true;
     }
 
     public virtual bool Remove(ICard card)
     {
+        if (_card != card) return false;
         if (!ShouldRemoveCard(card)) return false;
-        return _cards.Remove(card);
+        _card = null;
+        return true;
     }
 
-    public bool Has(ICard card) => _cards.Contains(card);
+    public bool Has(ICard card) => _card == card;
 }

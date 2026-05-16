@@ -1,10 +1,3 @@
-public enum CardType
-{
-    Buff,
-    Item,
-    Character
-}
-
 public enum StatType
 {
     Strength,

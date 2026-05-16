@@ -1,4 +1,4 @@
-public interface ISkill
+public interface ISkill : IVisual
 {
     void OnGain();
     void OnTick();

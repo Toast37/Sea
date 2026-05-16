@@ -1,7 +1,11 @@
-public interface ICard
+public interface ICard : IVisual
 {
-    string Name { get; }
-    CardType Type { get; }
-    void OnEquip();
-    void OnUnequip();
+    string   CardId     { get; }
+    string   Name       { get; }
+    string         GetPanelKey();
+    CardDescriptor Capture();
+    void           Restore(CardDescriptor d);
+    CardDescriptor NewDescriptor(string cardId);
+    void OnEquip(ICharacter owner);
+    void OnUnequip(ICharacter owner);
 }

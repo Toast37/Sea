@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-
 public interface ISlot
 {
-    IReadOnlyList<ICard> Cards { get; }
-    int? Capacity { get; }
+    ICard Card { get; }
     bool Add(ICard card);
     bool Remove(ICard card);
     bool Has(ICard card);
